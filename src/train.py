@@ -60,7 +60,7 @@ def autoregressive_ce_loss(
         torch.distributions.Categorical(logits=first_logits).entropy().mean().item()
     )
 
-    total_nll = 0.0
+    total_nll = torch.tensor(0.0, device=device)
     total_tok = 0
     next_input_ids = None
     max_answer_len = max(ans.size(0) for ans in answer_ids)
@@ -83,7 +83,7 @@ def autoregressive_ce_loss(
             break
 
         loss_t = F.cross_entropy(logits[mask], tgt[mask], reduction="sum")
-        total_nll += loss_t.item()
+        total_nll = total_nll + loss_t
         total_tok += int(mask.sum())
 
         pred_tokens = logits.argmax(-1)
@@ -92,7 +92,7 @@ def autoregressive_ce_loss(
             input_ids=next_input_ids, use_cache=True, past_key_values=past
         ).past_key_values
 
-    mean_loss = torch.tensor(total_nll / max(1, total_tok), device=device)
+    mean_loss = total_nll / max(1, total_tok)
     return mean_loss, entropy_val
 
 
