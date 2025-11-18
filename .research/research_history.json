@@ -452,7 +452,78 @@
     "iterations": [
       {
         "iteration_id": 1,
-        "method": "BLADE — BInarised LAyer-wise Direction Estimator\nKey ideas:\nA. 1-bit gradient fingerprint.  For every transformer block ℓ we sketch the previous step’s gradient sign pattern at *16 randomly chosen parameters* (sign ∈{−1,+1}).  Memory: 16 bits × 32 layers ≈ 64 bytes.\nB. Hamming-cosine alignment.  Current signs s^ℓ_t ∈{−1,+1}^{16}.  Previous signs p^ℓ_t are read from the 64-bit buffer.  Alignment a^ℓ_t = 1 – (Hamming(s^ℓ_t, p^ℓ_t)/16) ∈ [0,1].  No fp ops – just XOR and popcount.\nC. Quad-signal per layer.  For each ℓ maintain EMAs (β≃0.98) of: loss L̂, entropy Ĥ, gradient-norm Ğ^ℓ and alignment Â^ℓ.  Compute layer score\n     d^ℓ_t = [(L_t/L̂)(H_t/Ĥ)(G^ℓ_t/Ğ^ℓ)]^{1/3} · [(1+a^ℓ_t)/(1+Â^ℓ)]^{−1/2}.\n   Global LR multiplier d̄_t = median_ℓ d^ℓ_t to keep one optimiser; each layer then receives lr^ℓ_t = d̄_t · d^ℓ_t.  (Implemented by grouping parameters per layer in PyTorch.)  Clamp d^ℓ_t to [0.3,1.7].\nD. Reservoir index refresh.  Every 100 steps replace 2 of the 16 indices per layer using reservoir sampling so the sketch never goes stale.\nCost summary: 64-byte buffer, two uint16 operations per layer, <0.05 ms/step on A100, zero extra FLOPs."
+        "method": "BLADE — BInarised LAyer-wise Direction Estimator\nKey ideas:\nA. 1-bit gradient fingerprint.  For every transformer block ℓ we sketch the previous step’s gradient sign pattern at *16 randomly chosen parameters* (sign ∈{−1,+1}).  Memory: 16 bits × 32 layers ≈ 64 bytes.\nB. Hamming-cosine alignment.  Current signs s^ℓ_t ∈{−1,+1}^{16}.  Previous signs p^ℓ_t are read from the 64-bit buffer.  Alignment a^ℓ_t = 1 – (Hamming(s^ℓ_t, p^ℓ_t)/16) ∈ [0,1].  No fp ops – just XOR and popcount.\nC. Quad-signal per layer.  For each ℓ maintain EMAs (β≃0.98) of: loss L̂, entropy Ĥ, gradient-norm Ğ^ℓ and alignment Â^ℓ.  Compute layer score\n     d^ℓ_t = [(L_t/L̂)(H_t/Ĥ)(G^ℓ_t/Ğ^ℓ)]^{1/3} · [(1+a^ℓ_t)/(1+Â^ℓ)]^{−1/2}.\n   Global LR multiplier d̄_t = median_ℓ d^ℓ_t to keep one optimiser; each layer then receives lr^ℓ_t = d̄_t · d^ℓ_t.  (Implemented by grouping parameters per layer in PyTorch.)  Clamp d^ℓ_t to [0.3,1.7].\nD. Reservoir index refresh.  Every 100 steps replace 2 of the 16 indices per layer using reservoir sampling so the sketch never goes stale.\nCost summary: 64-byte buffer, two uint16 operations per layer, <0.05 ms/step on A100, zero extra FLOPs.",
+        "experimental_design": {
+          "experiment_summary": "Goal: show that BLADE, a 64-byte layer-wise 1-bit gradient fingerprint and LR rescaler, produces higher-quality, more stable fine-tuning of a small language model on mathematical reasoning.\nTask: single-GPU fine-tuning of the 0.6-billion-parameter Qwen3 model so that it can answer grade-school math word problems (GSM8K) by generating the exact final numeric/string answer.\nWorkflow:\n1. Load Qwen3-0.6B and the GSM8K train/dev/test splits.\n2. Fine-tune for three epochs (effective batch 64, fp16) with AdamW.\n3. Run two conditions:\n   • Proposed: AdamW + BLADE layer-wise LR scaling (K=16 sign bits per block, EMAs of loss, entropy, grad-norm and alignment, dℓ computation, median global multiplier, per-layer LR clamped to 0.3–1.7× schedule).\n   • Baseline: AdamW + SKETCH-ALIGN (best published model-level direction sketch controller).\n4. Evaluate each condition under three random seeds.\n5. Compute metrics on the held-out GSM8K test set and training logs: Exact-match accuracy (primary), run-to-run standard deviation, parameter-divergence norm, wall-clock time/step, and per-layer clamp frequency.\n6. Compare means and draw learning-curve and scatterplot visualisations to demonstrate accuracy gain and variance reduction.\nOutcome expected: BLADE yields ~75 % exact-match (↑1.6 pp) with ~4× lower run-to-run variance and <0.1 % time overhead, confirming the hypothesis that ultra-compact layer-local alignment control tames directional oscillation.",
+          "evaluation_metrics": [
+            {
+              "name": "Exact-Match Accuracy (%)",
+              "description": "Correctness: a prediction is correct iff the final answer string produced by the model, after removing whitespace and surrounding quotation marks, is an exact character-level match to the ground-truth answer supplied in the GSM8K dataset (case sensitive). Calculation: Accuracy = 100 × (number of correct predictions) / (total test examples). Task appropriateness: GSM8K problems have unique, unambiguous answers, so exact matching cleanly captures mathematical correctness. Visualisations: bar chart of accuracy per seed and line plot of accuracy vs training steps."
+            },
+            {
+              "name": "Run-to-Run Std Dev (pp)",
+              "description": "Correctness criteria: N/A – measures variability, not success. Calculation: sample standard deviation of exact-match percentages over the 3 random seeds. Task appropriateness: tiny-corpus fine-tuning is notoriously unstable; a low std-dev indicates a method suppresses stochastic oscillations. Visualisations: error bars on the accuracy bars, violin plot of seed distribution."
+            },
+            {
+              "name": "Parameter-Divergence Norm",
+              "description": "Correctness criteria: lower is better. For each pair of seeds i,j compute ||θ_i − θ_j||_2 / √(|θ|); take the mean over pairs. Calculation: L2 norm of weight differences, normalised by parameter count. Task appropriateness: quantifies how consistently weights converge; directional oscillation shows up as large divergence. Visualisations: heat-map of pairwise divergences."
+            },
+            {
+              "name": "Wall-Clock Time per Step (ms)",
+              "description": "Correctness criteria: N/A. Calculation: average elapsed time for forward + backward + optimiser step over entire training run, excluding validation. Task appropriateness: demonstrates that BLADE’s bit-level operations introduce negligible overhead. Visualisations: line chart of time/step over course of training."
+            },
+            {
+              "name": "Exact-match accuracy (%) on GSM8K test set",
+              "description": "Primary metric as specified in hypothesis: Exact-match accuracy (%) on GSM8K test set"
+            }
+          ],
+          "proposed_method": "BLADE (BInarised LAyer-wise Direction Estimator)\nObjective: eliminate intra-model directional oscillation during low-data fine-tuning by giving each transformer block an adaptive learning-rate multiplier based on 1-bit alignment information.\nTheory: For stable convergence, successive gradients for a parameter should show high sign coherence. Mis-alignment at the layer level suggests LR should shrink locally; strong alignment permits larger steps. BLADE approximates this signal with almost zero memory.\nComponents & Algorithm:\n1. Gradient Fingerprint: For each of L transformer blocks pick K=16 parameter indices once at start; store previous step’s sign bits (1/−1) in a 16-bit integer (total 2×32=64 bytes).\n2. Alignment: After backward, read the K current signs, XOR with stored bits, popcount to get Hamming distance h. Alignment a = 1 − h/K ∈[0,1]. Store current signs for next step.\n3. Quadruple EMAs (β=0.98): running means of (a) training loss L̂, (b) token-level entropy Ĥ, (c) per-layer gradient norm Ğℓ, (d) per-layer alignment Âℓ.\n4. Layer Score dℓ: d_main = [(L/L̂)(H/Ĥ)(Gℓ/Ğℓ)]^{1/3}; d_align = [(1+a)/(1+Âℓ)]^{−1/2}; dℓ = clamp(0.3,1.7, d_main·d_align).\n5. Global Scaling: d̄ = median_ℓ dℓ. Final per-layer LR = d̄·dℓ, implemented by one AdamW optimiser whose parameter groups correspond to layers.\n6. Reservoir Update: every 100 steps, resample 2 of the 16 indices per layer to keep fingerprints representative.\n7. Complexity: 2 integer ops + a few scalar FLOPs per layer; <0.05 ms on A100; 64 B memory.\nImplementation: 40-line PyTorch hook; see code snippet in hypothesis section.",
+          "comparative_methods": [
+            "SKETCH-ALIGN (model-level 4096-float gradient-direction sketch)"
+          ],
+          "models_to_use": [
+            "Qwen3-0.6B"
+          ],
+          "datasets_to_use": [
+            "gsm8k"
+          ],
+          "hyperparameters_to_search": [
+            {
+              "name": "beta_ema",
+              "range": "0.95-0.995"
+            },
+            {
+              "name": "K_bits_per_layer",
+              "range": "8,16,32"
+            },
+            {
+              "name": "clamp_min",
+              "range": "0.1-0.5"
+            },
+            {
+              "name": "clamp_max",
+              "range": "1.3-2.0"
+            },
+            {
+              "name": "reservoir_refresh_interval",
+              "range": "50,100,200"
+            }
+          ]
+        },
+        "experiment_runs": [
+          {
+            "run_id": "proposed-iter1-Qwen3-0.6B-gsm8k",
+            "method_name": "proposed",
+            "model_name": "Qwen3-0.6B",
+            "dataset_name": "gsm8k"
+          },
+          {
+            "run_id": "comparative-1-iter1-Qwen3-0.6B-gsm8k",
+            "method_name": "comparative-1",
+            "model_name": "Qwen3-0.6B",
+            "dataset_name": "gsm8k"
+          }
+        ]
       }
     ]
   }
