@@ -351,7 +351,7 @@ def main(cfg):  # noqa: C901 – main loop is inevitably lengthy
 
             with torch.cuda.amp.autocast(enabled=bool(cfg.training.fp16)):
                 loss, entropy_val = autoregressive_ce_loss(model, inp, attn, ans_ids, pad_id)
-                loss_scaled = loss / grad_accum
+            loss_scaled = loss / grad_accum
             scaler.scale(loss_scaled).backward()
             epoch_loss += loss.item() * len(ans_ids)
 
