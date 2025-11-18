@@ -208,11 +208,18 @@ class SketchAlignController:
 
 def build_model_and_optimizer(cfg, device):
     torch_dtype = torch.float16 if str(cfg.model.dtype).lower() == "fp16" else torch.float32
+    # Build kwargs for model loading
+    model_kwargs = {
+        "torch_dtype": torch_dtype,
+        "cache_dir": ".cache/",
+    }
+    # Only add device_map if CUDA is available (requires accelerate library)
+    if torch.cuda.is_available():
+        model_kwargs["device_map"] = "auto"
+
     model = AutoModelForCausalLM.from_pretrained(
         cfg.model.name,
-        torch_dtype=torch_dtype,
-        cache_dir=".cache/",
-        device_map="auto" if torch.cuda.is_available() else None,
+        **model_kwargs,
     )
     if cfg.model.gradient_checkpointing:
         model.gradient_checkpointing_enable()
