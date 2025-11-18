@@ -14,10 +14,10 @@ import hydra
 
 @hydra.main(config_path="../config", config_name="config")
 def main(cfg):
-    if not hasattr(cfg, "run") or cfg.run is None:
+    if not hasattr(cfg, "run_id") or cfg.run_id is None:
         raise ValueError("Missing run group. Call with run=<run_id>.")
 
-    run_id = cfg.run.run_id
+    run_id = cfg.run_id
 
     overrides: List[str] = [f"results_dir={cfg.results_dir}", f"mode={cfg.mode}"]
 

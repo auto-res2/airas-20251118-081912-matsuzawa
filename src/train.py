@@ -265,20 +265,19 @@ def run_optuna(cfg) -> Dict[str, Any]:
 @hydra.main(config_path="../config", config_name="config")
 def main(cfg):  # noqa: C901 – main loop is inevitably lengthy
     # ------------------------------------------------------------------
-    # Resolve run-level settings                                        
+    # Resolve run-level settings
     # ------------------------------------------------------------------
-    if not hasattr(cfg, "run") or cfg.run is None:
+    if not hasattr(cfg, "run_id") or cfg.run_id is None:
         raise ValueError("Config group 'run' missing. Launch with run=<run_id>.")
 
-    run_cfg = cfg.run
-    run_id: str = run_cfg.run_id
+    run_id: str = cfg.run_id
 
     # Mode-dependent overrides ----------------------------------------
     if cfg.mode == "trial":
         cfg.wandb.mode = "disabled"
         cfg.optuna.n_trials = 0
-        run_cfg.training.num_epochs = 1  # type: ignore[attr-defined]
-        run_cfg.training.logging_steps = 1  # type: ignore[attr-defined]
+        cfg.training.num_epochs = 1  # type: ignore[attr-defined]
+        cfg.training.logging_steps = 1  # type: ignore[attr-defined]
 
     # ------------------------------------------------------------------
     # Hyper-parameter search (Optuna)                                   
@@ -296,7 +295,7 @@ def main(cfg):  # noqa: C901 – main loop is inevitably lengthy
     original_cwd = get_original_cwd()
     os.chdir(original_cwd)
 
-    seed_everything(int(run_cfg.training.seed))  # type: ignore[attr-defined]
+    seed_everything(int(cfg.training.seed))  # type: ignore[attr-defined]
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     train_loader, val_loader, tokenizer = build_dataloaders(cfg, ".cache/")
@@ -316,7 +315,7 @@ def main(cfg):  # noqa: C901 – main loop is inevitably lengthy
     scheduler = get_linear_schedule_with_warmup(
         optimizer,
         num_warmup_steps=int(cfg.training.lr_scheduler.warmup_steps),
-        num_training_steps=len(train_loader) * int(run_cfg.training.num_epochs),  # type: ignore[attr-defined]
+        num_training_steps=len(train_loader) * int(cfg.training.num_epochs),  # type: ignore[attr-defined]
     )
 
     # ------------------------------------------------------------------
@@ -334,15 +333,15 @@ def main(cfg):  # noqa: C901 – main loop is inevitably lengthy
         )
 
     # ------------------------------------------------------------------
-    # Training loop                                                     
+    # Training loop
     # ------------------------------------------------------------------
-    scaler = torch.cuda.amp.GradScaler(enabled=bool(run_cfg.training.fp16))  # type: ignore[attr-defined]
-    grad_accum = int(run_cfg.training.gradient_accumulation_steps)  # type: ignore[attr-defined]
+    scaler = torch.cuda.amp.GradScaler(enabled=bool(cfg.training.fp16))  # type: ignore[attr-defined]
+    grad_accum = int(cfg.training.gradient_accumulation_steps)  # type: ignore[attr-defined]
     global_step = 0
     best_val_acc = -float("inf")
     best_epoch = -1
 
-    for epoch in range(int(run_cfg.training.num_epochs)):  # type: ignore[attr-defined]
+    for epoch in range(int(cfg.training.num_epochs)):  # type: ignore[attr-defined]
         epoch_loss = 0.0
         model.train()
         for step, batch in enumerate(train_loader):
@@ -350,7 +349,7 @@ def main(cfg):  # noqa: C901 – main loop is inevitably lengthy
             attn = batch["attention_mask"].to(device)
             ans_ids = batch["answer_ids"]
 
-            with torch.cuda.amp.autocast(enabled=bool(run_cfg.training.fp16)):
+            with torch.cuda.amp.autocast(enabled=bool(cfg.training.fp16)):
                 loss, entropy_val = autoregressive_ce_loss(model, inp, attn, ans_ids, pad_id)
                 loss_scaled = loss / grad_accum
             scaler.scale(loss_scaled).backward()
@@ -358,7 +357,7 @@ def main(cfg):  # noqa: C901 – main loop is inevitably lengthy
 
             if (step + 1) % grad_accum == 0:
                 scaler.unscale_(optimizer)
-                torch.nn.utils.clip_grad_norm_(model.parameters(), run_cfg.training.max_grad_norm)  # type: ignore[attr-defined]
+                torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.training.max_grad_norm)  # type: ignore[attr-defined]
 
                 if blade_ctl:
                     blade_ctl.update(loss.item(), entropy_val, scheduler.get_last_lr()[0])
@@ -371,7 +370,7 @@ def main(cfg):  # noqa: C901 – main loop is inevitably lengthy
                 scheduler.step()
                 global_step += 1
 
-                if wb and global_step % run_cfg.training.logging_steps == 0:  # type: ignore[attr-defined]
+                if wb and global_step % cfg.training.logging_steps == 0:  # type: ignore[attr-defined]
                     wb.log(
                         {
                             "train/loss": loss.item(),
