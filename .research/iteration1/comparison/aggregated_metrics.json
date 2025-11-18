@@ -1,0 +1,54 @@
+{
+  "primary_metric": "Exact-match accuracy (%) on GSM8K test set",
+  "metrics": {
+    "_runtime": {
+      "proposed-iter1-Qwen3-0.6B-gsm8k": 6207.799313184,
+      "comparative-1-iter1-Qwen3-0.6B-gsm8k": 3745.655299522
+    },
+    "_step": {
+      "proposed-iter1-Qwen3-0.6B-gsm8k": 348,
+      "comparative-1-iter1-Qwen3-0.6B-gsm8k": 348
+    },
+    "_timestamp": {
+      "proposed-iter1-Qwen3-0.6B-gsm8k": 1763465871.4214602,
+      "comparative-1-iter1-Qwen3-0.6B-gsm8k": 1763463783.1227615
+    },
+    "best_epoch": {
+      "proposed-iter1-Qwen3-0.6B-gsm8k": 0,
+      "comparative-1-iter1-Qwen3-0.6B-gsm8k": 0
+    },
+    "best_val_exact_match": {
+      "proposed-iter1-Qwen3-0.6B-gsm8k": 0,
+      "comparative-1-iter1-Qwen3-0.6B-gsm8k": 0
+    },
+    "epoch": {
+      "proposed-iter1-Qwen3-0.6B-gsm8k": 2,
+      "comparative-1-iter1-Qwen3-0.6B-gsm8k": 2
+    },
+    "eval/exact_match": {
+      "proposed-iter1-Qwen3-0.6B-gsm8k": 0,
+      "comparative-1-iter1-Qwen3-0.6B-gsm8k": 0
+    },
+    "lr": {
+      "proposed-iter1-Qwen3-0.6B-gsm8k": 4.4591651542649734e-05,
+      "comparative-1-iter1-Qwen3-0.6B-gsm8k": 4.4591651542649734e-05
+    },
+    "test_exact_match": {
+      "proposed-iter1-Qwen3-0.6B-gsm8k": 0,
+      "comparative-1-iter1-Qwen3-0.6B-gsm8k": 0
+    },
+    "train/entropy": {
+      "proposed-iter1-Qwen3-0.6B-gsm8k": 0,
+      "comparative-1-iter1-Qwen3-0.6B-gsm8k": 0
+    }
+  },
+  "best_proposed": {
+    "run_id": "proposed-iter1-Qwen3-0.6B-gsm8k",
+    "value": 0
+  },
+  "best_baseline": {
+    "run_id": "comparative-1-iter1-Qwen3-0.6B-gsm8k",
+    "value": 0
+  },
+  "gap": null
+}
