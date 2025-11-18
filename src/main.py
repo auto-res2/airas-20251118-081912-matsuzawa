@@ -32,16 +32,23 @@ def main(cfg):
     else:
         raise ValueError("mode must be 'trial' or 'full'")
 
+    # Get the project root directory (parent of src)
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    train_script = os.path.join(project_root, "src", "train.py")
+
     cmd = [
         sys.executable,
         "-u",
-        "-m",
-        "src.train",
+        train_script,
         f"run={run_id}",
     ] + overrides
 
+    # Add project root to PYTHONPATH so imports work correctly
+    env = os.environ.copy()
+    env["PYTHONPATH"] = project_root + os.pathsep + env.get("PYTHONPATH", "")
+
     print("Executing:", " ".join(cmd))
-    subprocess.run(cmd, check=True, env=os.environ.copy())
+    subprocess.run(cmd, check=True, env=env)
 
 if __name__ == "__main__":
     main()

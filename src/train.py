@@ -13,8 +13,8 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from transformers import get_linear_schedule_with_warmup
 
-from .preprocess import build_dataloaders, exact_match_metric
-from .model import (
+from src.preprocess import build_dataloaders, exact_match_metric
+from src.model import (
     BladeController,
     SketchAlignController,
     build_model_and_optimizer,
