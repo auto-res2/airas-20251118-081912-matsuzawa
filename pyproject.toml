@@ -3,17 +3,18 @@ name = "blade-experiments"
 version = "0.1.0"
 requires-python = ">=3.10"
 
-[project.dependencies]
-hydra-core = "^1.3.2"
-omegaconf = "^2.3.0"
-torch = "^2.1.0"
-transformers = "^4.40.0"
-datasets = "^2.18.0"
-wandb = "^0.16.0"
-optuna = "^3.5.0"
-scikit-learn = "^1.4.0"
-matplotlib = "^3.8.0"
-seaborn = "^0.13.0"
-pandas = "^2.2.0"
-scipy = "^1.11.0"
-sentencepiece = "^0.1.99"
+dependencies = [
+    "hydra-core>=1.3.2",
+    "omegaconf>=2.3.0",
+    "torch>=2.1.0",
+    "transformers>=4.40.0",
+    "datasets>=2.18.0",
+    "wandb>=0.16.0",
+    "optuna>=3.5.0",
+    "scikit-learn>=1.4.0",
+    "matplotlib>=3.8.0",
+    "seaborn>=0.13.0",
+    "pandas>=2.2.0",
+    "scipy>=1.11.0",
+    "sentencepiece>=0.1.99",
+]
