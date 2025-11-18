@@ -1,0 +1,128 @@
+\begin{thebibliography}{17}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[aut()]{author-year-mechanic}
+Mechanic: A learning rate tuner.
+
+\bibitem[Dettmers et~al.(2023)Dettmers, Pagnoni, Holtzman, and
+  Zettlemoyer]{dettmers-2023-qlora}
+Tim Dettmers, Artidoro Pagnoni, Ari Holtzman, and Luke Zettlemoyer.
+\newblock Qlora: Efficient finetuning of quantized llms.
+\newblock 2023.
+
+\bibitem[Fahrbach et~al.(2023)Fahrbach, Javanmard, Mirrokni, and
+  Worah]{fahrbach-2023-learning}
+Matthew Fahrbach, Adel Javanmard, Vahab Mirrokni, and Pratik Worah.
+\newblock Learning rate schedules in the presence of distribution shift.
+\newblock \emph{Proceedings of the 40th International Conference on Machine
+  Learning (ICML 2023) 9523-9546}, 2023.
+
+\bibitem[Hägele et~al.(2024)Hägele, Bakouch, Kosson, Allal, Werra, and
+  Jaggi]{hgele-2024-scaling}
+Alexander Hägele, Elie Bakouch, Atli Kosson, Loubna~Ben Allal, Leandro~Von
+  Werra, and Martin Jaggi.
+\newblock Scaling laws and compute-optimal training beyond fixed training
+  durations.
+\newblock 2024.
+
+\bibitem[Jin et~al.(2021)Jin, Zhou, Zhao, Zhu, Guo, Canini, and
+  Krishnamurthy]{jin-2021-autolrs}
+Yuchen Jin, Tianyi Zhou, Liangyu Zhao, Yibo Zhu, Chuanxiong Guo, Marco Canini,
+  and Arvind Krishnamurthy.
+\newblock Autolrs: Automatic learning-rate schedule by bayesian optimization on
+  the fly.
+\newblock 2021.
+
+\bibitem[Johnson et~al.(2020)Johnson, Agrawal, Gu, and
+  Guestrin]{johnson-2020-adascale}
+Tyler~B. Johnson, Pulkit Agrawal, Haijie Gu, and Carlos Guestrin.
+\newblock Adascale sgd: A user-friendly algorithm for distributed training.
+\newblock 2020.
+
+\bibitem[Luo et~al.(2024)Luo, Yu, and Li]{luo-2024-badam}
+Qijun Luo, Hengxu Yu, and Xiao Li.
+\newblock Badam: A memory efficient full parameter optimization method for
+  large language models.
+\newblock 2024.
+
+\bibitem[Ma et~al.(2024)Ma, Chu, Yang, Lin, Gao, and Zhao]{ma-2024-parameter}
+Xinyu Ma, Xu~Chu, Zhibang Yang, Yang Lin, Xin Gao, and Junfeng Zhao.
+\newblock Parameter efficient quasi-orthogonal fine-tuning via givens rotation.
+\newblock 2024.
+
+\bibitem[Maheswaranathan et~al.(2020)Maheswaranathan, Sussillo, Metz, Sun, and
+  Sohl-Dickstein]{maheswaranathan-2020-reverse}
+Niru Maheswaranathan, David Sussillo, Luke Metz, Ruoxi Sun, and Jascha
+  Sohl-Dickstein.
+\newblock Reverse engineering learned optimizers reveals known and novel
+  mechanisms.
+\newblock 2020.
+
+\bibitem[Schaipp et~al.(2023)Schaipp, Ohana, Eickenberg, Defazio, and
+  Gower]{schaipp-2023-momo}
+Fabian Schaipp, Ruben Ohana, Michael Eickenberg, Aaron Defazio, and Robert~M.
+  Gower.
+\newblock Momo: Momentum models for adaptive learning rates.
+\newblock 2023.
+
+\bibitem[Shi et~al.(2022)Shi, Suzgun, Freitag, Wang, Srivats, Vosoughi, Chung,
+  Tay, Ruder, Zhou, Das, and Wei]{shi-2022-language}
+Freda Shi, Mirac Suzgun, Markus Freitag, Xuezhi Wang, Suraj Srivats, Soroush
+  Vosoughi, Hyung~Won Chung, Yi~Tay, Sebastian Ruder, Denny Zhou, Dipanjan Das,
+  and Jason Wei.
+\newblock Language models are multilingual chain-of-thought reasoners.
+\newblock 2022.
+
+\bibitem[Tanaka et~al.(2025)Tanaka, Matsuzawa, Yoshino, Horiguchi, Takagi,
+  Yamauchi, and Kumagai]{airas2025}
+Toma Tanaka, Takumi Matsuzawa, Yuki Yoshino, Ilya Horiguchi, Shiro Takagi,
+  Ryutaro Yamauchi, and Wataru Kumagai.
+\newblock {AIRAS}, 2025.
+\newblock URL \url{https://github.com/airas-org/airas}.
+
+\bibitem[Toshniwal et~al.(2024)Toshniwal, Moshkov, Narenthiran, Gitman, Jia,
+  and Gitman]{toshniwal-2024-openmathinstruct}
+Shubham Toshniwal, Ivan Moshkov, Sean Narenthiran, Daria Gitman, Fei Jia, and
+  Igor Gitman.
+\newblock Openmathinstruct-1: A 1.8 million math instruction tuning dataset.
+\newblock 2024.
+
+\bibitem[Xu et~al.(2023)Xu, Xie, Gu, Chen, Chang, Zhang, Chen, Zhang, and
+  Tian]{xu-2023-lora}
+Yuhui Xu, Lingxi Xie, Xiaotao Gu, Xin Chen, Heng Chang, Hengheng Zhang, Zhengsu
+  Chen, Xiaopeng Zhang, and Qi~Tian.
+\newblock Qa-lora: Quantization-aware low-rank adaptation of large language
+  models.
+\newblock 2023.
+
+\bibitem[Zhang et~al.(2024{\natexlab{a}})Zhang, Da, Lee, Robinson, Wu, Song,
+  Zhao, Raja, Zhuang, Slack, Lyu, Hendryx, Kaplan, Lunati, and
+  Yue]{zhang-2024-careful}
+Hugh Zhang, Jeff Da, Dean Lee, Vaughn Robinson, Catherine Wu, Will Song,
+  Tiffany Zhao, Pranav Raja, Charlotte Zhuang, Dylan Slack, Qin Lyu, Sean
+  Hendryx, Russell Kaplan, Michele Lunati, and Summer Yue.
+\newblock A careful examination of large language model performance on grade
+  school arithmetic.
+\newblock 2024{\natexlab{a}}.
+
+\bibitem[Zhang et~al.(2023)Zhang, Chen, Bukharin, Karampatziakis, He, Cheng,
+  Chen, and Zhao]{zhang-2023-adaptive}
+Qingru Zhang, Minshuo Chen, Alexander Bukharin, Nikos Karampatziakis, Pengcheng
+  He, Yu~Cheng, Weizhu Chen, and Tuo Zhao.
+\newblock Adaptive budget allocation for parameter-efficient fine-tuning.
+\newblock 2023.
+
+\bibitem[Zhang et~al.(2024{\natexlab{b}})Zhang, Li, Hong, Li, Zhang, Zheng,
+  Chen, Lee, Yin, Hong, Wang, Liu, and Chen]{zhang-2024-revisiting}
+Yihua Zhang, Pingzhi Li, Junyuan Hong, Jiaxiang Li, Yimeng Zhang, Wenqing
+  Zheng, Pin-Yu Chen, Jason~D. Lee, Wotao Yin, Mingyi Hong, Zhangyang Wang,
+  Sijia Liu, and Tianlong Chen.
+\newblock Revisiting zeroth-order optimization for memory-efficient llm
+  fine-tuning: A benchmark.
+\newblock 2024{\natexlab{b}}.
+
+\end{thebibliography}

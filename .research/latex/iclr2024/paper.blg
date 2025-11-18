@@ -1,0 +1,66 @@
+This is BibTeX, Version 0.99d (TeX Live 2023/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: paper.aux
+The style file: iclr2024_conference.bst
+Database file #1: references.bib
+Warning--to sort, need author or key in author-year-mechanic
+Warning--empty author in author-year-mechanic
+Warning--empty journal in author-year-mechanic
+Warning--empty year in author-year-mechanic
+Warning--empty year in author-year-mechanic
+Warning--empty journal in dettmers-2023-qlora
+Warning--empty journal in hgele-2024-scaling
+Warning--empty journal in jin-2021-autolrs
+Warning--empty journal in johnson-2020-adascale
+Warning--empty journal in luo-2024-badam
+Warning--empty journal in ma-2024-parameter
+Warning--empty journal in maheswaranathan-2020-reverse
+Warning--empty journal in schaipp-2023-momo
+Warning--empty journal in shi-2022-language
+Warning--empty journal in toshniwal-2024-openmathinstruct
+Warning--empty journal in xu-2023-lora
+Warning--empty journal in zhang-2024-careful
+Warning--empty journal in zhang-2023-adaptive
+Warning--empty journal in zhang-2024-revisiting
+You've used 17 entries,
+            2773 wiz_defined-function locations,
+            652 strings with 8251 characters,
+and the built_in function-call counts, 10175 in all, are:
+= -- 749
+> -- 1074
+< -- 0
++ -- 360
+- -- 342
+* -- 969
+:= -- 1679
+add.period$ -- 49
+call.type$ -- 17
+change.case$ -- 165
+chr.to.int$ -- 16
+cite$ -- 54
+duplicate$ -- 335
+empty$ -- 532
+format.name$ -- 358
+if$ -- 1982
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 16
+newline$ -- 91
+num.names$ -- 64
+pop$ -- 371
+preamble$ -- 1
+purify$ -- 148
+quote$ -- 0
+skip$ -- 315
+stack$ -- 0
+substring$ -- 35
+swap$ -- 4
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 187
+warning$ -- 19
+while$ -- 48
+width$ -- 0
+write$ -- 192
+(There were 19 warnings)
