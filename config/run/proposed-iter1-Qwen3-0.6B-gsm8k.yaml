@@ -1,3 +1,4 @@
+# @package _global_
 run_id: proposed-iter1-Qwen3-0.6B-gsm8k
 method: proposed  # BLADE layer-wise LR controller
 model:
