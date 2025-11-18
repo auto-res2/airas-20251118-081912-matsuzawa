@@ -335,7 +335,10 @@ def main(cfg):  # noqa: C901 – main loop is inevitably lengthy
     # ------------------------------------------------------------------
     # Training loop
     # ------------------------------------------------------------------
-    scaler = torch.cuda.amp.GradScaler(enabled=bool(cfg.training.fp16))  # type: ignore[attr-defined]
+    # If model is already in FP16, we don't need GradScaler (it's for mixed precision training)
+    model_is_fp16 = str(cfg.model.dtype).lower() == "fp16"
+    use_amp = bool(cfg.training.fp16) and not model_is_fp16
+    scaler = torch.cuda.amp.GradScaler(enabled=use_amp)  # type: ignore[attr-defined]
     grad_accum = int(cfg.training.gradient_accumulation_steps)  # type: ignore[attr-defined]
     global_step = 0
     best_val_acc = -float("inf")
@@ -349,7 +352,7 @@ def main(cfg):  # noqa: C901 – main loop is inevitably lengthy
             attn = batch["attention_mask"].to(device)
             ans_ids = batch["answer_ids"]
 
-            with torch.cuda.amp.autocast(enabled=bool(cfg.training.fp16)):
+            with torch.cuda.amp.autocast(enabled=use_amp):
                 loss, entropy_val = autoregressive_ce_loss(model, inp, attn, ans_ids, pad_id)
             loss_scaled = loss / grad_accum
             scaler.scale(loss_scaled).backward()
