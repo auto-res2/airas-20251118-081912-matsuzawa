@@ -1,0 +1,23 @@
+defaults:
+  - run: ???
+  - _self_
+
+# ---------------------------------------------------------------------------
+# Global switches (can be overridden from CLI)                                
+# ---------------------------------------------------------------------------
+mode: full                # 'full' or 'trial'
+results_dir: ./results
+
+wandb:
+  entity: gengaru617-personal
+  project: 2025-11-18
+  mode: online            # auto-set to 'disabled' in trial mode
+
+optuna:
+  n_trials: 0
+  direction: maximize
+  search_space: {}
+
+# Provide a minimal default so logging works even if run config omits field
+training:
+  logging_steps: 1
