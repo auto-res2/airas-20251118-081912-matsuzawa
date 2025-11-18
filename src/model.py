@@ -207,15 +207,12 @@ class SketchAlignController:
 ###############################################################################
 
 def build_model_and_optimizer(cfg, device):
-    torch_dtype = torch.float16 if str(cfg.model.dtype).lower() == "fp16" else torch.float32
+    model_dtype = torch.float16 if str(cfg.model.dtype).lower() == "fp16" else torch.float32
     # Build kwargs for model loading
     model_kwargs = {
-        "torch_dtype": torch_dtype,
+        "dtype": model_dtype,
         "cache_dir": ".cache/",
     }
-    # Only add device_map if CUDA is available (requires accelerate library)
-    if torch.cuda.is_available():
-        model_kwargs["device_map"] = "auto"
 
     model = AutoModelForCausalLM.from_pretrained(
         cfg.model.name,
