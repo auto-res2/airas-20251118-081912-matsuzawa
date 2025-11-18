@@ -13,3 +13,18 @@ Epoch 0: val_loss=nan  val_EM=0.00%
 [2025-11-18 10:02:34,285][transformers.generation.utils][WARNING] - A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
 === [TRIAL RUN] PASSED for proposed-iter1-Qwen3-0.6B-gsm8k at Tue Nov 18 10:02:42 AM UTC 2025 ===
 
+=== [UV SYNC] Start at Tue Nov 18 10:03:40 AM UTC 2025 ===
+=== [UV SYNC] Finished successfully at Tue Nov 18 10:03:46 AM UTC 2025 ===
+=== [TRIAL RUN] Start for comparative-1-iter1-Qwen3-0.6B-gsm8k at Tue Nov 18 10:03:46 AM UTC 2025 ===
+Executing: /home/toma/t-80-8-b-03/_work/airas-20251118-081912-matsuzawa/airas-20251118-081912-matsuzawa/.venv/bin/python3 -u /home/toma/t-80-8-b-03/_work/airas-20251118-081912-matsuzawa/airas-20251118-081912-matsuzawa/src/train.py run=comparative-1-iter1-Qwen3-0.6B-gsm8k results_dir=.research/iteration1 mode=trial wandb.mode=disabled optuna.n_trials=0 training.num_epochs=1
+[2025-11-18 10:04:20,331][transformers.configuration_utils][WARNING] - `torch_dtype` is deprecated! Use `dtype` instead!
+[2025-11-18 10:05:55,089][transformers.generation.configuration_utils][WARNING] - The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+[2025-11-18 10:05:55,092][transformers.generation.utils][WARNING] - A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[2025-11-18 10:06:00,210][transformers.generation.utils][WARNING] - A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[2025-11-18 10:06:05,354][transformers.generation.utils][WARNING] - A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+Epoch 0: val_loss=nan  val_EM=0.00%
+[2025-11-18 10:06:10,852][transformers.generation.utils][WARNING] - A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[2025-11-18 10:06:15,853][transformers.generation.utils][WARNING] - A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[2025-11-18 10:06:20,936][transformers.generation.utils][WARNING] - A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+=== [TRIAL RUN] PASSED for comparative-1-iter1-Qwen3-0.6B-gsm8k at Tue Nov 18 10:06:31 AM UTC 2025 ===
+
