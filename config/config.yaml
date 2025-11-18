@@ -21,3 +21,4 @@ optuna:
 # Provide a minimal default so logging works even if run config omits field
 training:
   logging_steps: 1
+  num_epochs: 3
