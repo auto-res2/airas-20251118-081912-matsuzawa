@@ -56,9 +56,16 @@ def autoregressive_ce_loss(
     out = model(input_ids=input_ids, attention_mask=attention_mask, use_cache=True)
     past = out.past_key_values
     first_logits = out.logits[:, -1, :]
-    entropy_val = (
-        torch.distributions.Categorical(logits=first_logits).entropy().mean().item()
-    )
+    # Convert to float32 for numerical stability when computing entropy
+    # This prevents NaN issues with fp16 models and large vocabularies
+    first_logits_fp32 = first_logits.float()
+    # Check for NaN/inf and replace with safe values
+    if torch.isnan(first_logits_fp32).any() or torch.isinf(first_logits_fp32).any():
+        entropy_val = 0.0
+    else:
+        entropy_val = (
+            torch.distributions.Categorical(logits=first_logits_fp32).entropy().mean().item()
+        )
 
     total_nll = torch.tensor(0.0, device=device)
     total_tok = 0
@@ -215,14 +222,14 @@ def run_optuna(cfg) -> Dict[str, Any]:
         )
 
         grad_accum = int(trial_cfg.training.gradient_accumulation_steps)
-        scaler = torch.cuda.amp.GradScaler(enabled=bool(trial_cfg.training.fp16))
+        scaler = torch.amp.GradScaler('cuda', enabled=bool(trial_cfg.training.fp16))
         global_step = 0
         model.train()
         for batch in train_loader:
             inp = batch["input_ids"].to(device)
             attn = batch["attention_mask"].to(device)
             ans_ids = batch["answer_ids"]
-            with torch.cuda.amp.autocast(enabled=bool(trial_cfg.training.fp16)):
+            with torch.amp.autocast('cuda', enabled=bool(trial_cfg.training.fp16)):
                 loss, ent = autoregressive_ce_loss(model, inp, attn, ans_ids, pad_id)
                 loss_scaled = loss / grad_accum
             scaler.scale(loss_scaled).backward()
@@ -338,7 +345,7 @@ def main(cfg):  # noqa: C901 – main loop is inevitably lengthy
     # If model is already in FP16, we don't need GradScaler (it's for mixed precision training)
     model_is_fp16 = str(cfg.model.dtype).lower() == "fp16"
     use_amp = bool(cfg.training.fp16) and not model_is_fp16
-    scaler = torch.cuda.amp.GradScaler(enabled=use_amp)  # type: ignore[attr-defined]
+    scaler = torch.amp.GradScaler('cuda', enabled=use_amp)
     grad_accum = int(cfg.training.gradient_accumulation_steps)  # type: ignore[attr-defined]
     global_step = 0
     best_val_acc = -float("inf")
@@ -352,7 +359,7 @@ def main(cfg):  # noqa: C901 – main loop is inevitably lengthy
             attn = batch["attention_mask"].to(device)
             ans_ids = batch["answer_ids"]
 
-            with torch.cuda.amp.autocast(enabled=use_amp):
+            with torch.amp.autocast('cuda', enabled=use_amp):
                 loss, entropy_val = autoregressive_ce_loss(model, inp, attn, ans_ids, pad_id)
             loss_scaled = loss / grad_accum
             scaler.scale(loss_scaled).backward()

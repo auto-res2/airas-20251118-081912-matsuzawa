@@ -210,7 +210,7 @@ def build_model_and_optimizer(cfg, device):
     model_dtype = torch.float16 if str(cfg.model.dtype).lower() == "fp16" else torch.float32
     # Build kwargs for model loading
     model_kwargs = {
-        "dtype": model_dtype,
+        "torch_dtype": model_dtype,
         "cache_dir": ".cache/",
     }
 
